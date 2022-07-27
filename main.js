@@ -31,10 +31,63 @@ app.post("/post",async(req,res)=>{
         id:req.body.id
     })
     const val=await data.save();
-    res.send("New User Created Success");
+    res.send("User Added Successful");
+});
+ 
+//get
+app.get("/get/:id",function(req,res){
+    fetchid=req.params.id;
+    monmodel.find(({id:fetchid}),function(err,val){
+        if(err){
+            res.send("errrrrr");
+        }else{
+            if(val.length == 0){
+                res.send("Cannot find any customer using this id");
+            }else{
+                res.send(val);
+            }
+        }
+
+    })
+   
+});
+
+//put 
+app.put("/update/:id",async(req,res)=>{
+    let upid=req.params.id;
+    let upname=req.body.name;
+    let upemail=req.body.email;
+
+    monmodel.findOneAndUpdate({id:upid},{$set:{name:upname,email:upemail}},{new:true},(err,data)=>{
+        if(err){
+            res.send("Error")
+        }else{
+            if(data == null){
+                res.send("Nothing Found")
+            }else{
+                res.send(data)
+            }
+        }
+    })
+});
+
+//delete
+
+app.delete("/delete/:id",function(req,res){
+    let delid=req.params.id;
+    monmodel.findOneAndDelete(({id:delid}),function(err,docs){
+        if(err){
+            res.send("Some Error");
+        }else{
+            if(docs ==null){
+                res.send("No any data");
+            }else{
+                res.send(docs);
+            }
+        }
+    })
 })
+
 app.listen(3000,()=>{
     console.log("on port 3000")
-})
-//hh
-
+});
